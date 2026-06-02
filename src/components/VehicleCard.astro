@@ -1,0 +1,120 @@
+---
+import type { Vehiculo } from '../vehiculos';
+import { WHATSAPP_BASE_URL } from '../vehiculos';
+
+interface Props {
+  vehiculo: Vehiculo;
+}
+
+const { vehiculo } = Astro.props;
+
+const precioFormateado = vehiculo.precio.toLocaleString('en-US');
+const kmFormateado = vehiculo.km.toLocaleString('en-US');
+const esDisponible = vehiculo.estado === 'disponible';
+const searchable = [
+  vehiculo.nombre,
+  vehiculo.marca,
+  vehiculo.anio,
+  vehiculo.transmision,
+  vehiculo.combustible,
+].join(' ');
+
+const waMessage = encodeURIComponent(
+  `Hola, me interesa el ${vehiculo.nombre} ${vehiculo.anio}. ¿Está disponible?`
+);
+const waUrl = `${WHATSAPP_BASE_URL}?text=${waMessage}`;
+---
+
+<article
+  class="vehicle-card group flex min-w-0 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-red-200 hover:shadow-xl"
+  data-estado={vehiculo.estado}
+  data-nombre={vehiculo.nombre.toLowerCase()}
+  data-marca={vehiculo.marca}
+  data-transmision={vehiculo.transmision}
+  data-combustible={vehiculo.combustible}
+  data-search={searchable}
+  data-anio={vehiculo.anio}
+  data-precio={vehiculo.precio}
+>
+  <div class="relative aspect-[4/3] overflow-hidden bg-gray-900">
+    <img
+      src={vehiculo.imagen}
+      alt={`${vehiculo.nombre} ${vehiculo.anio}`}
+      class={`h-full w-full object-cover transition duration-500 group-hover:scale-105 ${esDisponible ? '' : 'grayscale'}`}
+      loading="lazy"
+    />
+
+    <div class="absolute left-3 top-3 flex items-center gap-2">
+      <span class="rounded-md bg-gray-900/80 px-2 py-1 text-xs font-extrabold text-white shadow-sm backdrop-blur">
+        {vehiculo.anio}
+      </span>
+      <span
+        class={`rounded-md px-2 py-1 text-xs font-extrabold text-white shadow-sm ${
+          esDisponible ? 'bg-green-500' : 'bg-gray-700'
+        }`}
+      >
+        {esDisponible ? 'Disponible' : 'Vendido'}
+      </span>
+    </div>
+  </div>
+
+  <div class="flex flex-1 flex-col p-4">
+    <div class="min-w-0">
+      <p class="text-[11px] font-extrabold uppercase tracking-wide text-red-700">{vehiculo.marca}</p>
+      <h2 class="mt-1 min-h-[3rem] text-xl font-extrabold leading-tight text-gray-950">
+        {vehiculo.nombre}
+      </h2>
+    </div>
+
+    <div class="mt-3 flex flex-wrap gap-2 text-xs font-medium text-gray-500">
+      <span class="inline-flex items-center gap-1 rounded-full bg-gray-50 px-2.5 py-1 ring-1 ring-gray-200">
+        <svg class="h-3.5 w-3.5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+        </svg>
+        {kmFormateado} km
+      </span>
+      <span class="inline-flex items-center gap-1 rounded-full bg-gray-50 px-2.5 py-1 ring-1 ring-gray-200">
+        <svg class="h-3.5 w-3.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+        </svg>
+        {vehiculo.transmision}
+      </span>
+      <span class="inline-flex items-center gap-1 rounded-full bg-gray-50 px-2.5 py-1 ring-1 ring-gray-200">
+        <svg class="h-3.5 w-3.5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+        </svg>
+        {vehiculo.combustible}
+      </span>
+    </div>
+
+    <div class="mt-auto pt-4">
+      <div class="border-t border-gray-100 pt-4">
+        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-400">Precio</p>
+        <p class="mt-1 text-2xl font-extrabold text-gray-950">${precioFormateado}</p>
+
+        <div class="mt-4 grid grid-cols-2 gap-2">
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex h-10 min-w-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-green-200 bg-green-50 px-2 text-sm font-bold text-green-700 transition hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
+            aria-label={`Consultar por WhatsApp sobre ${vehiculo.nombre} ${vehiculo.anio}`}
+          >
+            <svg class="h-4 w-4 flex-none" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+            </svg>
+            WhatsApp
+          </a>
+          <button
+            type="button"
+            data-vehicle-detail={vehiculo.id}
+            class="inline-flex h-10 min-w-0 cursor-pointer items-center justify-center rounded-lg bg-red-700 px-2 text-center text-sm font-bold text-white shadow-sm transition hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-offset-2"
+            aria-label={`Ver detalle de ${vehiculo.nombre} ${vehiculo.anio}`}
+          >
+            Ver detalle
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>

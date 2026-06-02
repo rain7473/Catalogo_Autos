@@ -1,0 +1,12 @@
+---
+import AdminDashboard from '../components/AdminDashboard';
+import Layout from '../layouts/Layout.astro';
+import { vehiculos } from '../vehiculos';
+---
+
+<Layout
+  title="Admin - Autos La Fe"
+  description="Panel administrativo para gestionar el inventario de Autos La Fe."
+>
+  <AdminDashboard initialVehicles={vehiculos} client:load />
+</Layout>
