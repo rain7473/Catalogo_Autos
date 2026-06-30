@@ -1,0 +1,29 @@
+---
+interface Props {
+  /** 'dark' = fondos oscuros, 'light' = fondos claros */
+  variant?: 'dark' | 'light';
+  /** 'md' = footer, 'lg' = header */
+  size?: 'md' | 'lg';
+  class?: string;
+}
+
+const { variant = 'dark', size = 'md', class: className = '' } = Astro.props;
+
+const logoSrc =
+  variant === 'light' ? '/logo/autoslafe_n.png' : '/logo/autoslafe_n_sin_fondo.png';
+
+const sizeClasses = {
+  md: 'h-9 w-auto max-w-[140px] object-contain object-left sm:h-10 sm:max-w-[160px]',
+  lg: 'h-9 w-auto max-w-[170px] object-contain object-left sm:h-10 sm:max-w-[200px] lg:max-w-[220px]',
+}[size];
+---
+
+<img
+  src={logoSrc}
+  alt="Autos La Fe"
+  class={`${sizeClasses} ${className}`}
+  width="2001"
+  height="547"
+  loading="eager"
+  decoding="async"
+/>

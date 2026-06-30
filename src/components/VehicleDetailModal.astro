@@ -1,6 +1,7 @@
 ---
 import type { Vehiculo } from '../vehiculos';
 import { WHATSAPP_BASE_URL } from '../vehiculos';
+import WhatsAppIcon from './icons/WhatsAppIcon.astro';
 
 interface Props {
   vehicles: Vehiculo[];
@@ -15,26 +16,26 @@ const modalPayload = JSON.stringify({
 
 <div
   id="vehicle-detail-modal"
-  class="vehicle-detail-modal fixed inset-0 z-[80] flex items-center justify-center p-4"
+  class="vehicle-detail-modal fixed inset-0 z-[80] flex items-center justify-center p-3 sm:p-4"
   aria-hidden="true"
   hidden
 >
   <button
     type="button"
-    class="vehicle-detail-overlay absolute inset-0 bg-slate-950/70 backdrop-blur-sm"
+    class="vehicle-detail-overlay absolute inset-0 bg-zinc-950/80 backdrop-blur-sm"
     data-modal-close
     aria-label="Cerrar detalle"
   ></button>
 
   <section
-    class="vehicle-detail-panel relative z-10 grid max-h-[92vh] w-full max-w-6xl overflow-hidden rounded-[1.75rem] bg-white text-slate-950 shadow-2xl lg:grid-cols-[1.08fr_0.92fr]"
+    class="vehicle-detail-panel relative z-10 grid max-h-[92vh] w-full max-w-6xl overflow-hidden rounded-2xl bg-white text-zinc-950 shadow-2xl lg:grid-cols-[1.05fr_0.95fr]"
     role="dialog"
     aria-modal="true"
     aria-labelledby="vehicle-modal-title"
   >
     <button
       type="button"
-      class="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-700 shadow-lg ring-1 ring-slate-200 transition hover:bg-red-50 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-700"
+      class="absolute right-4 top-4 z-20 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/95 text-zinc-700 shadow-lg ring-1 ring-zinc-200 transition-colors duration-200 hover:bg-red-50 hover:text-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-700"
       data-modal-close
       aria-label="Cerrar"
     >
@@ -43,8 +44,8 @@ const modalPayload = JSON.stringify({
       </svg>
     </button>
 
-    <div class="overflow-y-auto bg-slate-100 p-4 sm:p-5 lg:max-h-[92vh]">
-      <div class="relative overflow-hidden rounded-3xl bg-slate-900 shadow-inner">
+    <div class="overflow-y-auto bg-zinc-950 p-4 sm:p-5 lg:max-h-[92vh]">
+      <div class="relative overflow-hidden rounded-xl bg-zinc-900 ring-1 ring-white/10">
         <img
           id="vehicle-modal-image"
           src=""
@@ -55,7 +56,7 @@ const modalPayload = JSON.stringify({
         <button
           type="button"
           id="vehicle-modal-prev"
-          class="absolute left-3 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-900 shadow-lg transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-red-700"
+          class="absolute left-3 top-1/2 hidden h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white/90 text-zinc-900 shadow-lg transition-colors duration-200 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-red-700"
           aria-label="Imagen anterior"
         >
           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -66,7 +67,7 @@ const modalPayload = JSON.stringify({
         <button
           type="button"
           id="vehicle-modal-next"
-          class="absolute right-3 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-900 shadow-lg transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-red-700"
+          class="absolute right-3 top-1/2 hidden h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white/90 text-zinc-900 shadow-lg transition-colors duration-200 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-red-700"
           aria-label="Siguiente imagen"
         >
           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -81,40 +82,39 @@ const modalPayload = JSON.stringify({
     <div class="max-h-[92vh] overflow-y-auto p-5 sm:p-7">
       <div class="pr-10">
         <p id="vehicle-modal-brand" class="text-xs font-extrabold uppercase tracking-[0.2em] text-red-700"></p>
-        <h2 id="vehicle-modal-title" class="mt-2 text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl"></h2>
-        <p id="vehicle-modal-description" class="mt-4 text-sm leading-6 text-slate-600 sm:text-base"></p>
+        <h2 id="vehicle-modal-title" class="mt-2 text-2xl font-black tracking-tight text-zinc-950 sm:text-3xl"></h2>
+        <p id="vehicle-modal-description" class="mt-3 text-sm leading-6 text-zinc-600 sm:text-base sm:leading-7"></p>
       </div>
 
-      <div class="mt-6 grid grid-cols-2 gap-3">
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-          <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Modelo</p>
-          <p id="vehicle-modal-model" class="mt-1 text-base font-extrabold text-slate-950"></p>
+      <div class="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-zinc-200 bg-zinc-50 p-4 sm:p-5">
+        <div>
+          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-500">Precio</p>
+          <p id="vehicle-modal-price" class="mt-1 text-3xl font-black tracking-tight text-red-700"></p>
         </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-          <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Año</p>
-          <p id="vehicle-modal-year" class="mt-1 text-base font-extrabold text-slate-950"></p>
-        </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-          <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Precio</p>
-          <p id="vehicle-modal-price" class="mt-1 text-base font-extrabold text-red-700"></p>
-        </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-          <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Kilometraje</p>
-          <p id="vehicle-modal-km" class="mt-1 text-base font-extrabold text-slate-950"></p>
-        </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-          <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Transmisión</p>
-          <p id="vehicle-modal-transmission" class="mt-1 text-base font-extrabold text-slate-950"></p>
-        </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-          <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Combustible</p>
-          <p id="vehicle-modal-fuel" class="mt-1 text-base font-extrabold text-slate-950"></p>
-        </div>
+        <span id="vehicle-modal-status" class="inline-flex rounded-full px-3 py-1.5 text-sm font-extrabold"></span>
       </div>
 
-      <div class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-        <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Estado</p>
-        <span id="vehicle-modal-status" class="mt-2 inline-flex rounded-full px-3 py-1 text-sm font-extrabold"></span>
+      <div class="mt-4 grid grid-cols-2 gap-3">
+        <div class="rounded-xl border border-zinc-200 bg-white p-4">
+          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-500">Modelo</p>
+          <p id="vehicle-modal-model" class="mt-1 text-base font-extrabold text-zinc-950"></p>
+        </div>
+        <div class="rounded-xl border border-zinc-200 bg-white p-4">
+          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-500">Año</p>
+          <p id="vehicle-modal-year" class="mt-1 text-base font-extrabold text-zinc-950"></p>
+        </div>
+        <div class="rounded-xl border border-zinc-200 bg-white p-4">
+          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-500">Kilometraje</p>
+          <p id="vehicle-modal-km" class="mt-1 text-base font-extrabold text-zinc-950"></p>
+        </div>
+        <div class="rounded-xl border border-zinc-200 bg-white p-4">
+          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-500">Transmisión</p>
+          <p id="vehicle-modal-transmission" class="mt-1 text-base font-extrabold text-zinc-950"></p>
+        </div>
+        <div class="col-span-2 rounded-xl border border-zinc-200 bg-white p-4">
+          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-500">Combustible</p>
+          <p id="vehicle-modal-fuel" class="mt-1 text-base font-extrabold text-zinc-950"></p>
+        </div>
       </div>
 
       <div class="mt-6 grid gap-3 sm:grid-cols-2">
@@ -123,16 +123,14 @@ const modalPayload = JSON.stringify({
           href="#"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-green-600 px-4 text-sm font-extrabold text-white shadow-sm transition hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
+          class="inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 text-sm font-extrabold text-white shadow-sm transition-colors duration-200 hover:bg-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
         >
-          <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-          </svg>
+          <WhatsAppIcon class="h-4 w-4" />
           Consultar por WhatsApp
         </a>
         <button
           type="button"
-          class="inline-flex h-12 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-extrabold text-slate-700 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-offset-2"
+          class="inline-flex h-12 cursor-pointer items-center justify-center rounded-xl border border-zinc-200 bg-white px-4 text-sm font-extrabold text-zinc-700 transition-colors duration-200 hover:border-red-200 hover:bg-red-50 hover:text-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-700 focus-visible:ring-offset-2"
           data-modal-close
         >
           Volver al catálogo
@@ -145,10 +143,17 @@ const modalPayload = JSON.stringify({
 <script id="vehicles-detail-data" type="application/json" set:html={modalPayload}></script>
 
 <script>
+  import type { Vehiculo } from '../vehiculos';
+
+  interface DetailData {
+    vehicles: Vehiculo[];
+    whatsappBaseUrl: string;
+  }
+
   const detailDataNode = document.getElementById('vehicles-detail-data');
-  const detailData = JSON.parse(detailDataNode?.textContent || '{"vehicles":[]}');
-  const detailVehicles = detailData.vehicles || [];
-  const whatsappBaseUrl = detailData.whatsappBaseUrl || '';
+  const detailData = JSON.parse(detailDataNode?.textContent || '{"vehicles":[]}') as DetailData;
+  const detailVehicles = detailData.vehicles ?? [];
+  const whatsappBaseUrl = detailData.whatsappBaseUrl ?? '';
 
   const modal = document.getElementById('vehicle-detail-modal');
   const modalImage = document.getElementById('vehicle-modal-image');
@@ -177,15 +182,16 @@ const modalPayload = JSON.stringify({
   });
   const number = new Intl.NumberFormat('en-US');
 
-  let selectedVehicle: any = null;
+  let selectedVehicle: Vehiculo | null = null;
   let currentImageIndex = 0;
   let closeTimer = 0;
 
-  function getVehicleImages(vehicle: any) {
-    const images = Array.isArray(vehicle?.images) && vehicle.images.length > 0
-      ? vehicle.images
-      : [vehicle?.imagen].filter(Boolean);
-    return images.length > 0 ? images : ['https://placehold.co/960x640/1e293b/f8fafc?text=Vehiculo'];
+  function getVehicleImages(vehicle: Vehiculo): string[] {
+    const images =
+      Array.isArray(vehicle.images) && vehicle.images.length > 0
+        ? vehicle.images
+        : [vehicle.imagen].filter((src): src is string => Boolean(src));
+    return images.length > 0 ? images : ['https://placehold.co/960x640/18181b/fafafa?text=Vehiculo'];
   }
 
   function renderCarousel() {
@@ -205,12 +211,13 @@ const modalPayload = JSON.stringify({
     modalNext.classList.toggle('flex', showNavigation);
 
     modalThumbs.innerHTML = '';
+    const vehicle = selectedVehicle;
     images.forEach((image, index) => {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = [
-        'overflow-hidden rounded-xl ring-2 transition focus:outline-none focus:ring-red-700',
-        index === currentImageIndex ? 'ring-red-700' : 'ring-transparent hover:ring-red-200',
+        'cursor-pointer overflow-hidden rounded-lg ring-2 transition focus:outline-none focus-visible:ring-red-600',
+        index === currentImageIndex ? 'ring-red-600' : 'ring-transparent opacity-70 hover:opacity-100 hover:ring-red-900',
       ].join(' ');
       button.setAttribute('aria-label', `Ver imagen ${index + 1}`);
       button.addEventListener('click', () => {
@@ -220,7 +227,7 @@ const modalPayload = JSON.stringify({
 
       const img = document.createElement('img');
       img.src = image;
-      img.alt = `${selectedVehicle.nombre} miniatura ${index + 1}`;
+      img.alt = `${vehicle.nombre} miniatura ${index + 1}`;
       img.className = 'aspect-[4/3] w-full object-cover';
       img.loading = 'lazy';
 
@@ -233,7 +240,7 @@ const modalPayload = JSON.stringify({
     if (node) node.textContent = String(value ?? '');
   }
 
-  function openVehicleDetail(vehicle: any) {
+  function openVehicleDetail(vehicle: Vehiculo | undefined) {
     if (!vehicle || !modal || !modalWhatsapp) return;
 
     window.clearTimeout(closeTimer);
@@ -255,10 +262,10 @@ const modalPayload = JSON.stringify({
     setText(detailFields.fuel, vehicle.combustible);
     setText(detailFields.status, statusLabel);
 
-    detailFields.status?.classList.toggle('bg-green-100', vehicle.estado === 'disponible');
-    detailFields.status?.classList.toggle('text-green-700', vehicle.estado === 'disponible');
-    detailFields.status?.classList.toggle('bg-slate-200', vehicle.estado !== 'disponible');
-    detailFields.status?.classList.toggle('text-slate-700', vehicle.estado !== 'disponible');
+    detailFields.status?.classList.toggle('bg-emerald-100', vehicle.estado === 'disponible');
+    detailFields.status?.classList.toggle('text-emerald-700', vehicle.estado === 'disponible');
+    detailFields.status?.classList.toggle('bg-zinc-200', vehicle.estado !== 'disponible');
+    detailFields.status?.classList.toggle('text-zinc-700', vehicle.estado !== 'disponible');
 
     const message = encodeURIComponent(
       `Hola, estoy interesado en el ${vehicle.nombre} ${vehicle.anio} de ${price}. ¿Sigue disponible?`
@@ -292,7 +299,7 @@ const modalPayload = JSON.stringify({
   document.querySelectorAll('[data-vehicle-detail]').forEach((trigger) => {
     trigger.addEventListener('click', () => {
       const vehicleId = Number(trigger.getAttribute('data-vehicle-detail'));
-      const vehicle = detailVehicles.find((item: any) => Number(item.id) === vehicleId);
+      const vehicle = detailVehicles.find((item) => Number(item.id) === vehicleId);
       openVehicleDetail(vehicle);
     });
   });

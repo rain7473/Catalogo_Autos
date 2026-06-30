@@ -4,154 +4,313 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import VehicleCard from '../components/VehicleCard.astro';
 import VehicleDetailModal from '../components/VehicleDetailModal.astro';
-import { vehiculos } from '../vehiculos';
+import WhatsAppIcon from '../components/icons/WhatsAppIcon.astro';
+import { vehiculos, WHATSAPP_BASE_URL } from '../vehiculos';
 
 const disponibles = vehiculos.filter((vehiculo) => vehiculo.estado === 'disponible');
-const precioMinimo = Math.min(...vehiculos.map((vehiculo) => vehiculo.precio));
-const precioMaximo = Math.max(...vehiculos.map((vehiculo) => vehiculo.precio));
+const destacados = disponibles.slice(0, 3);
+const heroVehiculo = destacados[0];
 const marcas = [...new Set(vehiculos.map((vehiculo) => vehiculo.marca))].sort();
-const transmisiones = [...new Set(vehiculos.map((vehiculo) => vehiculo.transmision))].sort();
-const combustibles = [...new Set(vehiculos.map((vehiculo) => vehiculo.combustible))].sort();
-const anios = [...new Set(vehiculos.map((vehiculo) => vehiculo.anio))].sort((a, b) => b - a);
+const precioMinimo = Math.min(...(disponibles.length ? disponibles : vehiculos).map((vehiculo) => vehiculo.precio));
+
+const waUrl = `${WHATSAPP_BASE_URL}?text=${encodeURIComponent('Hola, me interesa información sobre los vehículos disponibles en Autos La Fe.')}`;
+
+const valores = [
+  {
+    titulo: 'Vehículos verificados',
+    texto: 'Cada unidad pasa por revisión mecánica y documental antes de publicarse en el catálogo.',
+    icono: 'check',
+  },
+  {
+    titulo: 'Precios claros',
+    texto: 'El precio que ves es el precio real. Sin cargos ocultos ni sorpresas al momento de cerrar.',
+    icono: 'tag',
+  },
+  {
+    titulo: 'Atención directa',
+    texto: 'Hablas directo con nosotros por WhatsApp. Respuesta rápida, fotos adicionales y citas el mismo día.',
+    icono: 'chat',
+  },
+  {
+    titulo: 'Entrega sin complicaciones',
+    texto: 'Te acompañamos en el traspaso y papeleo para que estrenes tu vehículo cuanto antes.',
+    icono: 'key',
+  },
+];
+
+const pasos = [
+  {
+    numero: '01',
+    titulo: 'Explora el catálogo',
+    texto: 'Filtra por marca, año, precio y características hasta encontrar el vehículo que buscas.',
+  },
+  {
+    numero: '02',
+    titulo: 'Consulta por WhatsApp',
+    texto: 'Escríbenos directo desde la ficha del vehículo. Te respondemos con detalles, fotos y disponibilidad.',
+  },
+  {
+    numero: '03',
+    titulo: 'Agenda y estrena',
+    texto: 'Ven a verlo en persona en San Pedro Sula, pruébalo y cierra el trato con confianza.',
+  },
+];
 ---
 
 <Layout>
   <Header />
 
-  <section class="bg-gradient-to-br from-gray-950 via-gray-900 to-red-950 text-white">
-    <div class="mx-auto max-w-7xl px-4 pb-16 pt-10 sm:px-6 sm:pb-20 sm:pt-14">
-      <div class="max-w-3xl">
-        <p class="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-red-300">Catálogo de vehículos</p>
-        <h1 class="max-w-2xl text-[2.5rem] font-extrabold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
-          Encuentra tu <span class="text-red-300">próximo auto</span>
-        </h1>
-        <p class="mt-5 max-w-2xl text-base leading-7 text-gray-300 sm:text-lg">
-          Vehículos verificados en San Pedro Sula. Filtra por marca, precio y características, y consulta directo por WhatsApp.
-        </p>
-        <div class="mt-6 flex flex-wrap items-center gap-3 text-sm text-gray-300">
-          <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-2 font-semibold">
-            <span class="h-2 w-2 rounded-full bg-green-400"></span>
-            {disponibles.length} vehículos disponibles
-          </span>
-          <span class="rounded-full bg-white/10 px-3 py-2 font-semibold">
-            Desde ${precioMinimo.toLocaleString('en-US')}
-          </span>
-        </div>
-      </div>
-    </div>
-  </section>
+  <main>
+    <!-- Hero -->
+    <section class="relative overflow-hidden bg-zinc-950 text-white">
+      <div class="bg-grid-dark absolute inset-0" aria-hidden="true"></div>
+      <div class="pointer-events-none absolute -top-48 right-[-12%] h-[520px] w-[520px] rounded-full bg-red-700/25 blur-[140px]" aria-hidden="true"></div>
+      <div class="pointer-events-none absolute -bottom-56 left-[-14%] h-[420px] w-[420px] rounded-full bg-red-900/20 blur-[130px]" aria-hidden="true"></div>
 
-  <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-    <section class="-mt-16 mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-xl sm:p-5" aria-label="Filtros del catálogo">
-      <div class="grid gap-3 lg:grid-cols-[1fr_auto] lg:items-center">
-        <label class="relative block">
-          <span class="sr-only">Buscar vehículo</span>
-          <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            id="search-input"
-            type="search"
-            placeholder="Buscar marca, modelo, transmisión o combustible"
-            class="h-12 w-full rounded-xl border border-gray-200 bg-white pl-12 pr-4 text-base text-gray-900 placeholder-gray-400 shadow-sm outline-none transition focus:border-red-700 focus:ring-4 focus:ring-red-100"
-          />
-        </label>
+      <div class="relative mx-auto grid max-w-7xl items-center gap-12 px-4 pb-16 pt-14 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:pb-24 lg:pt-20">
+        <div>
+          <p class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-red-300">
+            <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+            Concesionario en San Pedro Sula
+          </p>
 
-        <div class="grid grid-cols-3 rounded-xl bg-gray-100 p-1 sm:flex" role="tablist" aria-label="Estado del vehículo">
-          {[
-            { id: 'todos', label: 'Todos' },
-            { id: 'disponible', label: 'Disponibles' },
-            { id: 'vendido', label: 'Vendidos' },
-          ].map((tab) => (
-            <button
-              data-tab={tab.id}
-              class="tab-btn h-10 min-w-0 cursor-pointer rounded-lg px-2 text-sm font-semibold text-gray-600 transition hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-offset-2 data-[active=true]:bg-red-700 data-[active=true]:text-white data-[active=true]:shadow-sm sm:px-4"
-              type="button"
-              role="tab"
-              aria-selected={tab.id === 'disponible' ? 'true' : 'false'}
-              data-active={tab.id === 'disponible' ? 'true' : 'false'}
+          <h1 class="mt-6 max-w-xl text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+            Tu próximo auto, <span class="text-red-500">verificado</span> y listo para estrenar
+          </h1>
+
+          <p class="mt-5 max-w-lg text-base leading-7 text-zinc-300 sm:text-lg sm:leading-8">
+            Catálogo de vehículos seleccionados con revisión mecánica, precios claros y atención directa por WhatsApp.
+          </p>
+
+          <div class="mt-8 flex flex-wrap items-center gap-3">
+            <a
+              href="/catalogo"
+              class="inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-xl bg-red-700 px-6 text-sm font-bold text-white shadow-lg shadow-red-950/50 transition-colors duration-200 hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
             >
-              {tab.label}
-            </button>
+              Explorar catálogo
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h14" />
+                <path d="m13 6 6 6-6 6" />
+              </svg>
+            </a>
+            <a
+              href={waUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 text-sm font-bold text-white transition-colors duration-200 hover:border-white/40 hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
+            >
+              <WhatsAppIcon class="h-4 w-4 text-emerald-400" />
+              Hablar por WhatsApp
+            </a>
+          </div>
+
+          <dl class="mt-12 grid grid-cols-3 gap-4 border-t border-white/10 pt-8">
+            <div>
+              <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-400">Disponibles</dt>
+              <dd class="mt-1.5 text-2xl font-black tracking-tight text-white sm:text-3xl">{disponibles.length}</dd>
+            </div>
+            <div>
+              <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-400">Marcas</dt>
+              <dd class="mt-1.5 text-2xl font-black tracking-tight text-white sm:text-3xl">{marcas.length}</dd>
+            </div>
+            <div>
+              <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-400">Desde</dt>
+              <dd class="mt-1.5 text-2xl font-black tracking-tight text-red-500 sm:text-3xl">${precioMinimo.toLocaleString('en-US')}</dd>
+            </div>
+          </dl>
+        </div>
+
+        {heroVehiculo && (
+          <div class="relative hidden lg:block">
+            <div class="pointer-events-none absolute -inset-6 rounded-[2rem] bg-gradient-to-br from-red-700/30 via-transparent to-transparent blur-2xl" aria-hidden="true"></div>
+            <article class="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur">
+              <div class="relative aspect-[4/3] overflow-hidden">
+                <img
+                  src={heroVehiculo.imagen}
+                  alt={`${heroVehiculo.nombre} ${heroVehiculo.anio}`}
+                  class="h-full w-full object-cover"
+                  loading="eager"
+                  decoding="async"
+                />
+                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-zinc-950/70 via-transparent to-transparent" aria-hidden="true"></div>
+                <span class="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wide text-white">
+                  <span class="h-1.5 w-1.5 rounded-full bg-emerald-200"></span>
+                  Disponible
+                </span>
+              </div>
+              <div class="flex items-center justify-between gap-4 p-5">
+                <div class="min-w-0">
+                  <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-red-400">Destacado de la semana</p>
+                  <h2 class="mt-1 truncate text-lg font-extrabold tracking-tight text-white">
+                    {heroVehiculo.nombre} {heroVehiculo.anio}
+                  </h2>
+                  <p class="mt-0.5 text-xl font-black text-white">${heroVehiculo.precio.toLocaleString('en-US')}</p>
+                </div>
+                <button
+                  type="button"
+                  data-vehicle-detail={heroVehiculo.id}
+                  class="inline-flex h-11 flex-none cursor-pointer items-center justify-center rounded-xl bg-white px-4 text-sm font-bold text-zinc-950 transition-colors duration-200 hover:bg-zinc-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
+                  aria-label={`Ver detalle de ${heroVehiculo.nombre} ${heroVehiculo.anio}`}
+                >
+                  Ver detalle
+                </button>
+              </div>
+            </article>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- Marcas -->
+    <section class="border-b border-zinc-200 bg-white" aria-label="Marcas disponibles">
+      <div class="mx-auto max-w-7xl px-4 py-9 sm:px-6">
+        <p class="text-center text-xs font-extrabold uppercase tracking-[0.22em] text-zinc-400">
+          Marcas en nuestro catálogo
+        </p>
+        <div class="mt-5 flex flex-wrap items-center justify-center gap-2.5">
+          {marcas.map((marca) => (
+            <a
+              href={`/catalogo?marca=${encodeURIComponent(marca)}`}
+              class="inline-flex h-10 cursor-pointer items-center rounded-full border border-zinc-200 bg-zinc-50 px-5 text-sm font-bold text-zinc-700 transition-colors duration-200 hover:border-red-200 hover:bg-red-50 hover:text-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-700 focus-visible:ring-offset-2"
+            >
+              {marca}
+            </a>
           ))}
         </div>
       </div>
+    </section>
 
-      <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-        <label class="block">
-          <span class="mb-1.5 block text-xs font-bold uppercase tracking-wide text-gray-500">Marca</span>
-          <select id="brand-filter" class="filter-field">
-            <option value="">Todas</option>
-            {marcas.map((marca) => <option value={marca}>{marca}</option>)}
-          </select>
-        </label>
+    <!-- Destacados -->
+    <section class="bg-zinc-50" aria-labelledby="destacados-titulo">
+      <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-red-700">Recién llegados</p>
+            <h2 id="destacados-titulo" class="mt-2 text-3xl font-black tracking-tight text-zinc-950 sm:text-4xl">
+              Vehículos destacados
+            </h2>
+            <p class="mt-3 max-w-xl text-base leading-7 text-zinc-600">
+              Una selección de las mejores unidades disponibles ahora mismo. Todas verificadas y listas para entrega.
+            </p>
+          </div>
+          <a
+            href="/catalogo"
+            class="inline-flex h-11 cursor-pointer items-center gap-2 rounded-xl border border-zinc-300 bg-white px-5 text-sm font-bold text-zinc-800 shadow-sm transition-colors duration-200 hover:border-red-200 hover:bg-red-50 hover:text-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-700 focus-visible:ring-offset-2"
+          >
+            Ver catálogo completo
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14" />
+              <path d="m13 6 6 6-6 6" />
+            </svg>
+          </a>
+        </div>
 
-        <label class="block">
-          <span class="mb-1.5 block text-xs font-bold uppercase tracking-wide text-gray-500">Año</span>
-          <select id="year-filter" class="filter-field">
-            <option value="">Todos</option>
-            {anios.map((anio) => <option value={anio}>{anio}</option>)}
-          </select>
-        </label>
-
-        <label class="block">
-          <span class="mb-1.5 block text-xs font-bold uppercase tracking-wide text-gray-500">Transmisión</span>
-          <select id="transmission-filter" class="filter-field">
-            <option value="">Todas</option>
-            {transmisiones.map((transmision) => <option value={transmision}>{transmision}</option>)}
-          </select>
-        </label>
-
-        <label class="block">
-          <span class="mb-1.5 block text-xs font-bold uppercase tracking-wide text-gray-500">Combustible</span>
-          <select id="fuel-filter" class="filter-field">
-            <option value="">Todos</option>
-            {combustibles.map((combustible) => <option value={combustible}>{combustible}</option>)}
-          </select>
-        </label>
-
-        <label class="block">
-          <span class="mb-1.5 block text-xs font-bold uppercase tracking-wide text-gray-500">Precio máximo</span>
-          <select id="price-filter" class="filter-field">
-            <option value="">Sin límite</option>
-            <option value="22000">Hasta $22,000</option>
-            <option value="25000">Hasta $25,000</option>
-            <option value="30000">Hasta $30,000</option>
-            <option value={precioMaximo}>Hasta ${precioMaximo.toLocaleString('en-US')}</option>
-          </select>
-        </label>
+        <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {destacados.map((vehiculo) => (
+            <VehicleCard vehiculo={vehiculo} />
+          ))}
+        </div>
       </div>
+    </section>
 
-      <div class="mt-4 flex flex-col gap-3 border-t border-gray-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <p id="vehicle-counter" class="text-sm font-semibold text-gray-600">
-          {disponibles.length} vehículos disponibles desde ${precioMinimo.toLocaleString('en-US')}
+    <!-- Por qué elegirnos -->
+    <section class="bg-white" aria-labelledby="valores-titulo">
+      <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">
+        <div class="mx-auto max-w-2xl text-center">
+          <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-red-700">Por qué Autos La Fe</p>
+          <h2 id="valores-titulo" class="mt-2 text-3xl font-black tracking-tight text-zinc-950 sm:text-4xl">
+            Comprar un auto usado, sin el riesgo de siempre
+          </h2>
+        </div>
+
+        <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {valores.map((valor) => (
+            <div class="group rounded-2xl border border-zinc-200 bg-zinc-50 p-6 transition-colors duration-200 hover:border-red-200 hover:bg-red-50/40">
+              <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-red-700 text-white shadow-md shadow-red-200">
+                {valor.icono === 'check' && (
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                )}
+                {valor.icono === 'tag' && (
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" />
+                    <circle cx="7.5" cy="7.5" r="1" fill="currentColor" />
+                  </svg>
+                )}
+                {valor.icono === 'chat' && (
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                  </svg>
+                )}
+                {valor.icono === 'key' && (
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" />
+                    <circle cx="16.5" cy="7.5" r="1" fill="currentColor" />
+                  </svg>
+                )}
+              </span>
+              <h3 class="mt-5 text-base font-extrabold tracking-tight text-zinc-950">{valor.titulo}</h3>
+              <p class="mt-2 text-sm leading-6 text-zinc-600">{valor.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Cómo funciona -->
+    <section class="border-t border-zinc-200 bg-zinc-50" aria-labelledby="pasos-titulo">
+      <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">
+        <div class="mx-auto max-w-2xl text-center">
+          <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-red-700">Proceso simple</p>
+          <h2 id="pasos-titulo" class="mt-2 text-3xl font-black tracking-tight text-zinc-950 sm:text-4xl">
+            Así de fácil estrenas con nosotros
+          </h2>
+        </div>
+
+        <ol class="mt-12 grid gap-5 lg:grid-cols-3">
+          {pasos.map((paso) => (
+            <li class="relative rounded-2xl border border-zinc-200 bg-white p-7 shadow-sm">
+              <span class="text-4xl font-black tracking-tight text-red-700/15">{paso.numero}</span>
+              <h3 class="mt-3 text-lg font-extrabold tracking-tight text-zinc-950">{paso.titulo}</h3>
+              <p class="mt-2 text-sm leading-6 text-zinc-600">{paso.texto}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <!-- CTA final -->
+    <section class="relative overflow-hidden bg-zinc-950 text-white" aria-labelledby="cta-titulo">
+      <div class="bg-grid-dark absolute inset-0" aria-hidden="true"></div>
+      <div class="pointer-events-none absolute left-1/2 top-1/2 h-[420px] w-[680px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-700/25 blur-[130px]" aria-hidden="true"></div>
+
+      <div class="relative mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 lg:py-24">
+        <h2 id="cta-titulo" class="text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
+          ¿Listo para encontrar tu próximo auto?
+        </h2>
+        <p class="mx-auto mt-4 max-w-xl text-base leading-7 text-zinc-300 sm:text-lg">
+          Explora el catálogo o escríbenos directo. Te ayudamos a elegir el vehículo que mejor se ajusta a tu presupuesto.
         </p>
-        <button
-          id="clear-filters"
-          type="button"
-          class="h-10 w-full cursor-pointer rounded-xl border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-600 shadow-sm transition hover:border-red-200 hover:bg-red-50 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-offset-2 sm:w-auto"
-        >
-          Limpiar filtros
-        </button>
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <a
+            href="/catalogo"
+            class="inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-xl bg-red-700 px-6 text-sm font-bold text-white shadow-lg shadow-red-950/50 transition-colors duration-200 hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
+          >
+            Ver catálogo
+          </a>
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 text-sm font-bold text-white transition-colors duration-200 hover:bg-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
+          >
+            <WhatsAppIcon class="h-4 w-4" />
+            Escribir por WhatsApp
+          </a>
+        </div>
       </div>
-    </section>
-
-    <section id="vehicles-grid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" aria-live="polite">
-      {vehiculos.map((vehiculo) => (
-        <VehicleCard vehiculo={vehiculo} />
-      ))}
-    </section>
-
-    <section id="no-results" class="hidden py-16 text-center">
-      <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-        <svg class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M8 16h8M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      </div>
-      <h2 class="text-xl font-bold text-gray-800">No hay vehículos con esos filtros</h2>
-      <p class="mx-auto mt-2 max-w-sm text-sm leading-6 text-gray-500">
-        Prueba quitando algún filtro o busca por otra marca/modelo.
-      </p>
     </section>
   </main>
 
@@ -159,101 +318,3 @@ const anios = [...new Set(vehiculos.map((vehiculo) => vehiculo.anio))].sort((a, 
 
   <Footer />
 </Layout>
-
-<script>
-  const searchInput = document.getElementById('search-input') as HTMLInputElement | null;
-  const brandFilter = document.getElementById('brand-filter') as HTMLSelectElement | null;
-  const yearFilter = document.getElementById('year-filter') as HTMLSelectElement | null;
-  const transmissionFilter = document.getElementById('transmission-filter') as HTMLSelectElement | null;
-  const fuelFilter = document.getElementById('fuel-filter') as HTMLSelectElement | null;
-  const priceFilter = document.getElementById('price-filter') as HTMLSelectElement | null;
-  const clearFiltersButton = document.getElementById('clear-filters');
-  const counter = document.getElementById('vehicle-counter');
-  const noResults = document.getElementById('no-results');
-  const tabButtons = document.querySelectorAll<HTMLButtonElement>('[data-tab]');
-  const cards = document.querySelectorAll<HTMLElement>('.vehicle-card');
-
-  let activeTab = 'disponible';
-
-  const normalize = (value: string) =>
-    value
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/\p{Diacritic}/gu, '')
-      .trim();
-
-  function updateDisplay() {
-    const term = normalize(searchInput?.value ?? '');
-    const brand = normalize(brandFilter?.value ?? '');
-    const year = yearFilter?.value ?? '';
-    const transmission = normalize(transmissionFilter?.value ?? '');
-    const fuel = normalize(fuelFilter?.value ?? '');
-    const maxPrice = Number(priceFilter?.value ?? 0);
-    let visible = 0;
-
-    cards.forEach((card) => {
-      const searchable = normalize(card.dataset.search ?? '');
-      const estado = card.dataset.estado ?? '';
-      const cardBrand = normalize(card.dataset.marca ?? '');
-      const cardYear = card.dataset.anio ?? '';
-      const cardTransmission = normalize(card.dataset.transmision ?? '');
-      const cardFuel = normalize(card.dataset.combustible ?? '');
-      const cardPrice = Number(card.dataset.precio ?? 0);
-
-      const matches =
-        (activeTab === 'todos' || estado === activeTab) &&
-        (!term || searchable.includes(term)) &&
-        (!brand || cardBrand === brand) &&
-        (!year || cardYear === year) &&
-        (!transmission || cardTransmission === transmission) &&
-        (!fuel || cardFuel === fuel) &&
-        (!maxPrice || cardPrice <= maxPrice);
-
-      card.hidden = !matches;
-      if (matches) visible++;
-    });
-
-    if (counter) {
-      const estadoTexto =
-        activeTab === 'todos'
-          ? 'encontrados'
-          : activeTab === 'vendido'
-            ? visible === 1 ? 'vendido' : 'vendidos'
-            : visible === 1 ? 'disponible' : 'disponibles';
-      counter.textContent = `${visible} vehículo${visible === 1 ? '' : 's'} ${estadoTexto}`;
-    }
-
-    noResults?.classList.toggle('hidden', visible > 0);
-  }
-
-  function setTab(tabId: string) {
-    activeTab = tabId;
-
-    tabButtons.forEach((button) => {
-      const isActive = button.dataset.tab === tabId;
-      button.dataset.active = String(isActive);
-      button.setAttribute('aria-selected', String(isActive));
-    });
-
-    updateDisplay();
-  }
-
-  tabButtons.forEach((button) => {
-    button.addEventListener('click', () => setTab(button.dataset.tab ?? 'todos'));
-  });
-
-  [searchInput, brandFilter, yearFilter, transmissionFilter, fuelFilter, priceFilter].forEach((field) => {
-    field?.addEventListener('input', updateDisplay);
-    field?.addEventListener('change', updateDisplay);
-  });
-
-  clearFiltersButton?.addEventListener('click', () => {
-    if (searchInput) searchInput.value = '';
-    [brandFilter, yearFilter, transmissionFilter, fuelFilter, priceFilter].forEach((field) => {
-      if (field) field.value = '';
-    });
-    setTab('disponible');
-  });
-
-  setTab('disponible');
-</script>
