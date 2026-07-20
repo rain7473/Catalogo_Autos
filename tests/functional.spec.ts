@@ -78,7 +78,100 @@ test.describe('pruebas funcionales del catalogo', () => {
     expect(href).toContain('https://wa.me/50499999999');
     expect(decodeURIComponent(href ?? '')).toContain('Hola, me interesa el Toyota Hilux 2021');
   });
+
+  test('6. combina filtros y permite restablecerlos', async ({ page }) => {
+    await gotoApp(page, '/catalogo');
+
+    await page.locator('#brand-filter').selectOption('Toyota');
+    await page.locator('#year-filter').selectOption('2021');
+    await page.locator('#transmission-filter').selectOption({ index: 1 });
+    await page.locator('#fuel-filter').selectOption('Diesel');
+    await page.locator('#price-filter').selectOption('30000');
+
+    await expect(page.locator('.vehicle-card:visible')).toHaveCount(1);
+    await expect(page.locator('.vehicle-card').filter({ hasText: 'Toyota Hilux' })).toBeVisible();
+
+    await page.locator('#clear-filters').click();
+    await expect(page.locator('#brand-filter')).toHaveValue('');
+    await expect(page.locator('#year-filter')).toHaveValue('');
+    await expect(page.locator('.vehicle-card:visible')).toHaveCount(5);
+  });
+
+  test('7. filtra por estado y muestra el caso sin coincidencias', async ({ page }) => {
+    await gotoApp(page, '/catalogo');
+
+    await page.getByRole('tab', { name: /vendidos/i }).click();
+    await expect(page.locator('.vehicle-card').filter({ hasText: 'Ford Escape' })).toBeVisible();
+    await expect(page.locator('.vehicle-card').filter({ hasText: 'Toyota Hilux' })).toBeHidden();
+
+    await page.getByRole('tab', { name: /todos/i }).click();
+    await page.locator('#search-input').fill('modelo sin coincidencias');
+    await expect(page.locator('#no-results')).toBeVisible();
+    await expect(page.locator('#vehicles-grid')).toBeHidden();
+
+    await page.locator('#no-results-clear').click();
+    await expect(page.locator('#no-results')).toBeHidden();
+    await expect(page.locator('.vehicle-card:visible')).toHaveCount(5);
+  });
+
+  test('8. navega el carrusel, cierra el detalle y forma el enlace de WhatsApp del vehiculo', async ({ page }) => {
+    await gotoApp(page, '/catalogo');
+
+    await page
+      .locator('.vehicle-card')
+      .filter({ hasText: 'Toyota Hilux' })
+      .getByRole('button', { name: /ver detalle/i })
+      .click();
+
+    const modal = page.locator('#vehicle-detail-modal');
+    const image = page.locator('#vehicle-modal-image');
+    const initialSource = await image.getAttribute('src');
+
+    await page.getByRole('button', { name: /siguiente imagen/i }).click();
+    await expect(image).not.toHaveAttribute('src', initialSource ?? '');
+
+    const whatsappLink = page.locator('#vehicle-modal-whatsapp');
+    const href = await whatsappLink.getAttribute('href');
+    expect(href).toContain('https://wa.me/50499999999?text=');
+    expect(href).toContain('%20');
+    expect(decodeURIComponent(href ?? '')).toContain('Toyota Hilux 2021');
+
+    await page.keyboard.press('Escape');
+    await expect(modal).toBeHidden();
+  });
 });
+
+for (const viewport of [
+  { name: 'celular', width: 390, height: 844 },
+  { name: 'tableta', width: 768, height: 1024 },
+  { name: 'computadora', width: 1440, height: 900 },
+]) {
+  test(`responsividad: el catalogo se puede usar en ${viewport.name}`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await gotoApp(page, '/catalogo');
+
+    await expect(page.getByRole('heading', { name: /cat.logo de veh.culos/i })).toBeVisible();
+    await expect(page.locator('.vehicle-card').first()).toBeVisible();
+    await expect(page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).resolves.toBe(true);
+
+    if (viewport.width < 1024) {
+      await page.locator('#filters-toggle').click();
+      await expect(page.locator('#filters-toggle')).toHaveAttribute('aria-expanded', 'true');
+      await expect(page.locator('#filters-panel')).toBeVisible();
+    } else {
+      await expect(page.locator('#filters-panel')).toBeVisible();
+    }
+
+    await page
+      .locator('.vehicle-card')
+      .filter({ hasText: 'Toyota Hilux' })
+      .getByRole('button', { name: /ver detalle/i })
+      .click();
+    await expect(page.locator('#vehicle-detail-modal')).toBeVisible();
+    await page.getByRole('button', { name: /^Cerrar$/i }).click();
+    await expect(page.locator('#vehicle-detail-modal')).toBeHidden();
+  });
+}
 
 test.describe('pruebas funcionales del panel administrativo', () => {
   test.beforeEach(async ({ page }) => {
