@@ -532,6 +532,7 @@ export default function AdminDashboard({ initialVehicles }: AdminDashboardProps)
             <div className="grid flex-1 gap-4 overflow-y-auto p-5 sm:grid-cols-2">
               <Field label="Marca">
                 <Input
+                  aria-label="Marca"
                   className="h-10 rounded-xl border-slate-200"
                   onChange={(event) => updateField("marca", event.target.value)}
                   value={form.marca}
@@ -539,6 +540,7 @@ export default function AdminDashboard({ initialVehicles }: AdminDashboardProps)
               </Field>
               <Field label="Modelo">
                 <Input
+                  aria-label="Modelo"
                   className="h-10 rounded-xl border-slate-200"
                   onChange={(event) => updateField("nombre", event.target.value)}
                   value={form.nombre}
@@ -546,6 +548,7 @@ export default function AdminDashboard({ initialVehicles }: AdminDashboardProps)
               </Field>
               <Field label="Año">
                 <Input
+                  aria-label="Año"
                   className="h-10 rounded-xl border-slate-200"
                   min="1980"
                   onChange={(event) => updateField("anio", Number(event.target.value))}
@@ -555,6 +558,7 @@ export default function AdminDashboard({ initialVehicles }: AdminDashboardProps)
               </Field>
               <Field label="Kilometraje">
                 <Input
+                  aria-label="Kilometraje"
                   className="h-10 rounded-xl border-slate-200"
                   min="0"
                   onChange={(event) => updateField("km", Number(event.target.value))}
@@ -564,6 +568,7 @@ export default function AdminDashboard({ initialVehicles }: AdminDashboardProps)
               </Field>
               <Field label="Precio">
                 <Input
+                  aria-label="Precio"
                   className="h-10 rounded-xl border-slate-200"
                   min="0"
                   onChange={(event) => updateField("precio", Number(event.target.value))}
@@ -573,6 +578,7 @@ export default function AdminDashboard({ initialVehicles }: AdminDashboardProps)
               </Field>
               <Field label="Estado">
                 <select
+                  aria-label="Estado"
                   className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold outline-none focus:border-red-700 focus:ring-4 focus:ring-red-100"
                   onChange={(event) => updateField("estado", event.target.value as Vehiculo["estado"])}
                   value={form.estado}
@@ -583,6 +589,7 @@ export default function AdminDashboard({ initialVehicles }: AdminDashboardProps)
               </Field>
               <Field label="Transmisión">
                 <select
+                  aria-label="Transmisión"
                   className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold outline-none focus:border-red-700 focus:ring-4 focus:ring-red-100"
                   onChange={(event) => updateField("transmision", event.target.value)}
                   value={form.transmision}
@@ -593,6 +600,7 @@ export default function AdminDashboard({ initialVehicles }: AdminDashboardProps)
               </Field>
               <Field label="Combustible">
                 <select
+                  aria-label="Combustible"
                   className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold outline-none focus:border-red-700 focus:ring-4 focus:ring-red-100"
                   onChange={(event) => updateField("combustible", event.target.value)}
                   value={form.combustible}
@@ -605,6 +613,7 @@ export default function AdminDashboard({ initialVehicles }: AdminDashboardProps)
               </Field>
               <Field className="sm:col-span-2" label="URL de imagen">
                 <Input
+                  aria-label="URL de imagen"
                   className="h-10 rounded-xl border-slate-200"
                   onChange={(event) => updateField("imagen", event.target.value)}
                   placeholder="https://..."
